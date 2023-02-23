@@ -1,33 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// LinkedList in C
-
-// PROS:
-// - O(1) insertion of elements to tail or head;
-//	 Insertion at any arbitrary position doesn't require shifting all other elements.
-// - Does not need to be stored in contiguous memory location.
-// - Length can change dynamically.
-
-// CONS:
-// - O(k) access to kth element in list.
-// - Each node is more memory-intensive when compared to an array.
-
-typedef struct node
-{
-	int data;
-	struct node *next;
-} node;
-
-typedef struct LinkedList
-{
-	node *head;
-	node *tail;
-} LinkedList;
+#include "linkedlist.h"
 
 node *create_node(int data)
 {
 	node *new_node = malloc(sizeof(node));
+
+	if (new_node == NULL)
+		return NULL;
 
 	new_node->data = data;
 	new_node->next = NULL;
@@ -38,6 +19,9 @@ node *create_node(int data)
 LinkedList *create_list(void)
 {
 	LinkedList *new_list = malloc(sizeof(LinkedList));
+
+	if (new_list == NULL)
+		return NULL;
 
 	new_list->head = NULL;
 	new_list->tail = NULL;
@@ -158,12 +142,12 @@ void print_linked_list(LinkedList *list)
 	}
 }
 
-int main(int argc, char **argv)
-{
-	LinkedList *cool_list = create_list();
-	tail_insert(cool_list, 14);
-	tail_insert(cool_list, 41);
-	tail_insert(cool_list, 30);
-	head_insert(cool_list, 72);
-	print_linked_list(cool_list);
-}
+// int main(int argc, char **argv)
+// {
+// 	LinkedList *cool_list = create_list();
+// 	tail_insert(cool_list, 14);
+// 	tail_insert(cool_list, 41);
+// 	tail_insert(cool_list, 30);
+// 	head_insert(cool_list, 72);
+// 	print_linked_list(cool_list);
+// }
