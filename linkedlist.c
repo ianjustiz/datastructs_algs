@@ -4,9 +4,10 @@
 // LinkedList in C
 
 // PROS:
-// - O(1) insertion of elements to tail or head.
+// - O(1) insertion of elements to tail or head;
+//	 Insertion at any arbitrary position doesn't require shifting all other elements.
 // - Does not need to be stored in contiguous memory location.
-// - 
+// - Length can change dynamically.
 
 // CONS:
 // - O(k) access to kth element in list.
@@ -15,7 +16,7 @@
 typedef struct node
 {
 	int data;
-	struct node next;
+	struct node *next;
 } node;
 
 typedef struct LinkedList
@@ -34,7 +35,7 @@ node *create_node(int data)
 	return new_node;
 }
 
-LinkedList *create_list()
+LinkedList *create_list(void)
 {
 	LinkedList *new_list = malloc(sizeof(LinkedList));
 
@@ -44,54 +45,125 @@ LinkedList *create_list()
 	return new_list;
 }
 
-LinkedList *head_insert(int data, LinkedList *list)
+void head_insert(LinkedList *list, int data)
 {
 	node *new_node;
 
 	// NULL check for list.
 	if (list == NULL)
-		return NULL;
+		return;
 
 	// Create a node with given parameters.
 	new_node = create_node(data);
 
 	// For an empty list, update head + tail with our node.
-	if (head == NULL)
+	if (list->head == NULL)
 	{
 		list->head = list->tail = new_node;
-		return list;
 	}
 
 	// Otherwise, list is non-empty. Perform insertion.
-	new_node->next = list->head;
-	list->head = new_node;
-	return list;
+	else
+	{
+		new_node->next = list->head;
+		list->head = new_node;
+	}
 }
 
-LinkedList *tail_insert(int data, LinkedList *list)
+void tail_insert(LinkedList *list, int data)
 {
 	node *new_node;
 
 	// NULL check for list.
 	if (list == NULL)
-		return NULL;
+		return;
 
 	// Create a node with given parameters.
 	new_node = create_node(data);
 
 	// For an empty list, update head + tail with our node.
-	if (head == NULL)
+	if (list->head == NULL)
 	{
 		list->head = list->tail = new_node;
-		return list;
 	}
 
 	// Otherwise, list is non-empty. Perform insertion.
-	list->
-	return list;
+	else
+	{
+		printf("%d\n", data);
+		list->tail = list->tail->next = new_node;
+	}
+}
+
+node *delete_list(node *head)
+{
+	node *curr;
+
+	// Free each node iteratively.
+	while (head != NULL)
+	{
+		curr = head->next;
+		free(head);
+		head = curr;
+	}
+
+	return NULL;
+}
+
+LinkedList *delete_linked_list(LinkedList *list)
+{
+	// NULL check for list.
+	if (list == NULL)
+		return NULL;
+
+	// Free the interior list and the broader struct.
+	delete_list(list->head);
+	free(list);
+
+	return NULL;
+}
+
+void print_list(node *head)
+{
+	if (head == NULL)
+		return;
+
+	printf("[ %d ]%s", head->data, head->next == NULL ?
+		"\n" : " -> ");
+
+	print_list(head->next);
+}
+
+void print_linked_list(LinkedList *list)
+{
+	node *curr;
+
+	// NULL check for list.
+	if (list == NULL)
+	{
+		printf("Provided list is NULL.\n");
+		return;
+	}
+
+	// Empty check for list.
+	else if(list->head == NULL)
+	{
+		printf("Provided list is empty.\n");
+	}
+
+	// Print elements.
+	else
+	{
+		print_list(list->head);
+	}
 }
 
 int main(int argc, char **argv)
 {
-
+	LinkedList *cool_list = create_list();
+	tail_insert(cool_list, 14);
+	tail_insert(cool_list, 41);
+	tail_insert(cool_list, 30);
+	head_insert(cool_list, 72);
+	print_linked_list(cool_list);
 }
