@@ -7,6 +7,9 @@
 #define STACK_EMPTY_ERR INT_MAX
 
 // I implement a stack w/o capacity here.
+
+// STACK //
+// LIFO Abstract Data Structure
 typedef struct Stack
 {
 	LinkedList *list;
@@ -42,7 +45,7 @@ int isFull(Stack *s)
 
 void push(Stack *s, int data)
 {
-	if (isFull(s))
+	if (isFull(s) || data == STACK_EMPTY_ERR)
 		return;
 
 	head_insert(s->list, data);
@@ -108,4 +111,5 @@ int main(void)
 
 	print_stack(cool_stack);
 
+	return 0;
 }
