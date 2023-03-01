@@ -3,18 +3,14 @@
 #include <limits.h>
 
 #include "linkedlist.h"
-
-#define QUEUE_EMPTY_ERR INT_MAX
+#include "queue.h"
 
 // I implement a queue w/o capacity here.
 
 // QUEUE //
 // FIFO Abstract Data Structure
-typedef struct Queue
-{
-	LinkedList *list;
-	int size;
-} Queue;
+
+// Expand description.
 
 Queue *create_queue(void)
 {
@@ -50,7 +46,7 @@ void enqueue(Queue *q, int data)
 
 	tail_insert(q->list, data);
 
-	s->size++;
+	q->size++;
 }
 
 int dequeue(Queue *q)
@@ -88,9 +84,4 @@ int front(Queue *q)
 void print_queue(Queue *q)
 {
 	print_linked_list(q->list);
-}
-
-int main(void)
-{
-	return 0;
 }
