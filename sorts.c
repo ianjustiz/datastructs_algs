@@ -116,9 +116,9 @@ void insertion_sort(int *arr, int n)
 }
 
 // Bucket Sort //
-// Worst case: O(n + k)
-// Best case: O(n + k) **?**
-// (where n is the amount of elements in the array, and k is the range of the elements.)
+// Worst case: O(n + m)
+// Best case: O(n + m)
+// (where n is the amount of elements in the array, and m is the range of the elements.)
 
 // Description: Also known as Counting Sort, this algorithm utilizes an array
 // to store counters for each element in the array. For this reason, the range
@@ -158,12 +158,15 @@ void bucket_sort(int *arr, int n)
 			buckets[i]--;
 		}
 	}
+
+	free(buckets);
 }
 
 // Radix Sort (L.S.D.) //
-// Worst case: O(nd)
-// Best case: **
-// (where n...)
+// Worst case: O(nd) or (n log m)
+// Best case: O(nd) or (n log m)
+// (where n is the amount of elements, m is the largest value in the array,
+// and d is the amount of digits in m.)
 
 // Description:
 // Notes:
@@ -216,6 +219,144 @@ void radix_sort(int *arr, int n)
 			}
 		}
 	}
+
+	free(buckets);
+}
+
+// Merge Sort //
+// Worst case: O(n log n)
+// Best case: O(n log n)
+// (where n...)
+
+// Description: 
+// Notes:
+
+void merge_sort_recursive(int *arr, int lo, int hi)
+{
+	int mid;
+	int i, j, curr;
+	int *left, *right;
+	int left_max, right_max;
+
+	// Base case.
+	if (lo >= hi)
+		return;
+
+	// Calculate maximum, careful to avoiding going out of bounds.
+	mid = lo + (hi - lo) / 2;
+
+	// Recursive calls for subarrays.
+	merge_sort_recursive(arr, lo, mid);
+	merge_sort_recursive(arr, mid + 1, hi);
+
+	// Calculate size of left and right arrays.
+	left_max = mid - lo + 1;
+	right_max = hi - mid;
+
+	// Dynamically allocate memory for new arrays.
+	left = malloc(sizeof(int) * left_max);
+	right = malloc(sizeof(int) * right_max);
+
+	// Copy values into new arrays
+	for (i = 0; i < left_max; i++)
+		left[i] = arr[lo + i];
+
+	for (j = 0; j < right_max; j++)
+		right[j] = arr[mid + 1 + j];		
+
+	// Assign variables for use in merging.
+	curr = lo;
+	i = 0;
+	j = 0;
+
+	// Merge subarrays.
+	while (curr <= hi)
+	{
+		if (i >= left_max || j < right_max && left[i] > right[j])
+			arr[curr++] = right[j++];
+		else if (j >= right_max || left[i] <= right[j])
+			arr[curr++] = left[i++];
+	}
+
+	// Free left and right arrays.
+	free(left);
+	free(right);
+}
+
+void merge_sort(int *arr, int n)
+{
+	merge_sort_recursive(arr, 0, n - 1);
+}
+
+// Quicksort //
+// Worst case: O(n^2)
+// Best case: O(n log n)
+
+// Description: Quicksort employs the divide-and-conquer strategy. A pivot can be selected
+// by several means, including the median-of-three strategy and by merely using the leftmost element.
+// Two pointers iterate from the left to right side of a given array, swapping when both are pointing
+// to elements on the incorrect sides (greater than and less than respectively). When one of several
+// terminating conditions is reached, the pivot is swapped into sorted position. Quicksort is then
+// called recursively on the remaining subarrays, excluding the previously sorted element (pivot).
+// Notes: On average, Quicksort is the fastest comparison-based sorting algorithm.
+// For small arrays, it is recommended to use a different algorithm.
+
+int get_pivot(int *arr, int lo, int hi)
+{
+	// Expand to use median-of-three.
+	return lo;
+}
+
+void quick_sort_recursive(int *arr, int lo, int hi)
+{
+	int pivot, index_pivot;
+	int i, j, cont;
+
+	// Base case.
+	if (lo >= hi)
+		return;
+
+	// Get a pivot and its index.
+	index_pivot = get_pivot(arr, lo, hi);
+	pivot = arr[index_pivot];
+
+	// Initialize pointers for left and right side.
+	i = index_pivot + 1;
+	j = hi;
+
+	// Perform swapping operation.
+	while (i < j)
+	{
+		while (arr[i] <= pivot && i <= j)
+			i++;
+
+		while (arr[j] > pivot && j > index_pivot)
+			j--;
+
+		if (i < j && arr[i] > pivot && arr[j] <= pivot)
+			swap(arr, i++, j--);
+	}
+
+	// Ensure the right pointer (now likely left) is pointing to an element equal to
+	// or less than the pivot, if not the pivot itself.
+	while (j > index_pivot && arr[j] > pivot)
+		j--;
+
+	// Swap if the right pointer's element is less than the pivot.
+	if (arr[j] < pivot)
+	{
+		swap(arr, index_pivot, j);
+		index_pivot = j;
+	}
+
+	// Recursive calls for subarrays.
+	quick_sort_recursive(arr, lo, index_pivot - 1);
+	quick_sort_recursive(arr, index_pivot + 1, hi);
+}
+
+void quick_sort(int *arr, int n)
+{
+	quick_sort_recursive(arr, 0, n-1);
 }
 
 int *generate_rand_str(int n)
@@ -234,6 +375,27 @@ int *generate_rand_str(int n)
 	return arr;
 }
 
+int sort_tester(void)
+{
+	int *a;
+	int i, j;
+
+	for (i = 0; i < 1000000; i++)
+	{
+		a = generate_rand_str(20);
+
+		quick_sort(a, 20);
+
+		for (j = 1; j < 20; j++)
+			if (a[j] < a[j-1])
+				return 1;
+
+		free(a);
+	}
+
+	return 0;
+}
+
 void print_string(int *arr, int n)
 {
 	int i;
@@ -247,12 +409,14 @@ int main(void)
 	int size = 10;
 	int *a;
 
+	//printf("%s\n", tester() ? "Does not work." : "Works great!");
+
 	a = generate_rand_str(size);
 	print_string(a, size);
+	fflush(stdout);
 
-	radix_sort(a, size);
+	quick_sort(a, size);
 	print_string(a, size);
-
 
 	return 0;
 }
