@@ -13,5 +13,4 @@ Current functionality:
     - Insertion Sort
     - Selection Sort
     - Bubble Sort
-
-BSTs coming soon!
+  - Binary Search Trees
