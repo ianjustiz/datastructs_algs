@@ -38,62 +38,74 @@ node *insert(node *root, int data)
 
 	if (data <= root->data)
 	{
-		insert(root->left, data);
+		root->left = insert(root->left, data);
 		return root;
 	}
 	else
 	{
-		insert(root->right, data);
+		root->right = insert(root->right, data);
 		return root;
 	}
 }
 
-void delete(node *root, int data)
+node *delete(node *root, int data)
 {
-	node *temp;
 	node *rep;
+	int temp;
 
-	temp = search(root, data);
+	if (root == NULL)
+		return NULL;
 
-	if (root == NULL || search == NULL)
-		return;
+	// Recursive calls to delete if not located at root.
+	if (root->data > data)
+	{
+		root->left = delete(root->left, data);
+		return root; 
+	}
+	else if (root->data < data)
+	{
+		root->right = delete(root->right, data);
+		return root;
+	}
 
 	// Case 1: No child nodes.
-	if (temp->left == temp->right == NULL)
+	if (root->left == root->right)
 	{
-		free(temp);
-		temp = NULL;
+		free(root);
+		return NULL;
 	}
 
 	// Case 2: Two child nodes.
-	if (temp->left != NULL && temp->right != NULL)
+	if (root->left != NULL && root->right != NULL)
 	{
 		// Find largest element on lefthand side.
-		rep = temp->left;
+		rep = root->left;
 
 		while (rep->right != NULL)
 			rep = rep->right;
 
 		// Move rep value into location of temp and free.
-		temp->data = rep->data;
-		free(rep);
-		rep = NULL;
+		temp = rep->data;
+		delete(root, temp);
+		root->data = temp;
+
+		return root;
 	}
 
 	// Case 3a: One child node, left side.
-	if (temp->left != NULL)
+	if (root->left != NULL)
 	{
-		rep = temp->left;
-		free(temp);
-		temp = rep;
+		rep = root->left;
+		free(root);
+		return rep;
 	}
 
 	// Case 3b: One child node, right side.
 	else
 	{
-		rep = temp->right;
-		free(temp);
-		temp = rep;
+		rep = root->right;
+		free(root);
+		return rep;
 	}
 }
 
@@ -116,6 +128,10 @@ int main(void)
 	root = insert(root, 5);
 	root = insert(root, 7);
 	root = insert(root, 45);
+
+	root = delete(root, 15);
+
+	root = delete(root, 7);
 
 	inorder(root);
 }
