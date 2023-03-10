@@ -14,3 +14,5 @@ Current functionality:
     - Selection Sort
     - Bubble Sort
   - Binary Search Trees
+  - AVL Trees (WIP - Experimental)
+  
