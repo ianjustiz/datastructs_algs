@@ -70,44 +70,55 @@ node *right_rotation(node *root)
 	return root;
 }
 
-node *insert(node *root, data)
+node *insert_recursive(node *root, int data, int *height)
 {
 	int bf;
 	int dir;
 
 	if (root == NULL)
+	{
+		*height = 0;
 		return create_node(data);
+	}
 
 	if (data <= root->data)
 	{
-		root->left = insert(root->left, data);
+		root->left = insert_recursive(root->left, data, height);
+		*height++;
 		dir = 1;
 	}
 	else
 	{
-		root->right = insert(root->right, data);
-		dir = 0;
+		root->right = insert_recursive(root->right, data, height);
+		*height++;
+		dir = -1;
 	}
 
-	root->height++;
+	// Update height of current node, if needed.
+	if (root->height < *height)
+		root->height = height;
+
 	bf = get_balance_factor(root);
 
 	// If an unbalanced node is found,
 	if (bf > 1 || bf < -1)
 	{
 		// Node was inserted left side -
-		if (dir)
+		if (dir > 0)
 		{
 			// Opposite signs - 
+			// (LR)
 			if (get_balance_factor(root->left) < 0)
 			{
-				root = right_rotation(root);
+				root->left = left_rotation(root->left);
+				root = right_rotation(left);
 			}
 
 			// Matching signs (or balanced) -
+			// (LL)
 			else
 			{
-
+				root = right_rotation(root);
 			}
 		}
 
@@ -115,16 +126,29 @@ node *insert(node *root, data)
 		else
 		{
 			// Opposite signs - 
-			if (get_balance_factor(root->left) > 0)
+			// (RL)
+			if (get_balance_factor(root->right) > 0)
 			{
-
+				root->right = right_rotation(root->right);
+				root = left_rotation(right);
 			}
 
 			// Matching signs (or balanced) -
+			// (RR)
 			else
 			{
-
+				left_rotation(root);
 			}
 		}
 	}
+}
+
+node *insert(node *root, int data)
+{
+	int *height;
+
+	height = malloc(sizeof(int));
+	insert_recursive(root, data, height);
+
+	free(height);
 }
