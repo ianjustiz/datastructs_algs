@@ -15,4 +15,4 @@ Current functionality:
     - Bubble Sort
   - Binary Search Trees
   - AVL Trees (WIP - Experimental)
-  
+  - Tries (WIP - Currently non-functional)
