@@ -37,7 +37,7 @@ trieNode *addString(trieNode *root, char *str)
 		if (!isalpha(str[i]))
 			break;
 		
-		ch = tolower(str[i]);
+		ch = tolower(str[i]) - 'a';
 
 		if (curr->nodes[ch] == NULL)
 			curr->nodes[ch] = createNode(0);
@@ -65,7 +65,7 @@ int isContained(trieNode *root, char *str)
 		if (!isalpha(str[i]))
 			return 0;
 		
-		ch = tolower(str[i]);
+		ch = tolower(str[i]) - 'a';
 		curr = curr->nodes[ch];
 
 		if (curr == NULL)
@@ -88,7 +88,7 @@ int main(void)
 
 	cool = addString(cool, "hello");
 
-	if (isContained(cool, "hello"))
+	if (isContained(cool, "hell"))
 		printf("nice\n");
 	else
 		printf("oh no!\n");
