@@ -16,3 +16,4 @@ Current functionality:
   - Binary Search Trees
   - AVL Trees (WIP - Experimental)
   - Tries (WIP - Experimental)
+  - Heaps (WIP - Incomplete)
